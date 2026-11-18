@@ -1,0 +1,250 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Book inventory output",
+  "$comment": "Edit this file and the mapping in claim.py when changing field names or required fields. Totals are calculated in Python, not by the model.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "sweep",
+    "books",
+    "totals"
+  ],
+  "properties": {
+    "sweep": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "captured_at",
+        "device",
+        "duration_s",
+        "country",
+        "currency"
+      ],
+      "properties": {
+        "id": {
+          "type": "string"
+        },
+        "captured_at": {
+          "type": "string"
+        },
+        "device": {
+          "type": "string"
+        },
+        "duration_s": {
+          "type": "number",
+          "minimum": 0
+        },
+        "country": {
+          "type": "string"
+        },
+        "currency": {
+          "type": "string"
+        }
+      }
+    },
+    "books": {
+      "type": "array",
+      "items": {
+        "$ref": "#/$defs/book"
+      }
+    },
+    "totals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "book_count",
+        "books_identified",
+        "books_unidentified",
+        "books_replacement_cost",
+        "books_used_value",
+        "excluded_from_totals",
+        "shelf_run_m"
+      ],
+      "properties": {
+        "book_count": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "All counted physical book detections, including unreadable titles. The exported books list contains identified books only."
+        },
+        "books_identified": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "books_unidentified": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Detected books with unreadable titles; omitted from the public inventory list."
+        },
+        "books_replacement_cost": {
+          "type": "number",
+          "minimum": 0
+        },
+        "books_used_value": {
+          "type": "number",
+          "minimum": 0
+        },
+        "excluded_from_totals": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Books without an accepted replacement price, or excluded/duplicate/appraisal-only books. Used-price eligibility is calculated separately."
+        },
+        "shelf_run_m": {
+          "type": "null",
+          "description": "Measurement feature disabled; remains unknown."
+        }
+      }
+    }
+  },
+  "$defs": {
+    "book": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "author",
+        "edition",
+        "isbn",
+        "shelf",
+        "position",
+        "frame_ref",
+        "status",
+        "id_confidence",
+        "replacement_cost",
+        "used_value",
+        "spine_height_cm",
+        "spine_thickness_cm"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Stable ID of one physical book; multiple copies have separate IDs."
+        },
+        "title": {
+          "type": "string",
+          "description": "A readable title is required. Unidentified detections remain internal and are not exported.",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "author": {
+          "type": "string"
+        },
+        "edition": {
+          "type": "string"
+        },
+        "isbn": {
+          "type": "string"
+        },
+        "shelf": {
+          "type": "string"
+        },
+        "position": {
+          "type": "integer",
+          "minimum": 0
+        },
+        "frame_ref": {
+          "type": "string",
+          "description": "Relative path to saved sweep evidence."
+        },
+        "status": {
+          "enum": [
+            "identified",
+            "needs_appraisal"
+          ]
+        },
+        "id_confidence": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "replacement_cost": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/replacement_price"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "used_value": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/used_price"
+            },
+            {
+              "type": "null"
+            }
+          ]
+        },
+        "spine_height_cm": {
+          "type": "null",
+          "description": "Measurement feature disabled; remains unknown."
+        },
+        "spine_thickness_cm": {
+          "type": "null",
+          "description": "Measurement feature disabled; remains unknown."
+        }
+      }
+    },
+    "replacement_price": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "amount",
+        "source",
+        "url",
+        "retrieved_at",
+        "converted"
+      ],
+      "properties": {
+        "amount": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "source": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "retrieved_at": {
+          "type": "string"
+        },
+        "converted": {
+          "const": false
+        }
+      }
+    },
+    "used_price": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "amount",
+        "source",
+        "url",
+        "retrieved_at",
+        "condition_assumed"
+      ],
+      "properties": {
+        "amount": {
+          "type": "number",
+          "exclusiveMinimum": 0
+        },
+        "source": {
+          "type": "string"
+        },
+        "url": {
+          "type": "string"
+        },
+        "retrieved_at": {
+          "type": "string"
+        },
+        "condition_assumed": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

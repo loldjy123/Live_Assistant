@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: live-assistant
+    runtime: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: python main.py
+    healthCheckPath: /health
+    envVars:
+      - key: GOOGLE_API_KEY
+        sync: false
+      - key: GEMINI_MODEL
+        value: gemini-3.1-flash-live-preview
+      - key: RESEARCH_MODEL
+        value: gemini-2.5-flash
+      - key: ALLOWED_ORIGINS
+        value: https://loldjy123.github.io
+      - key: CLAIMS_DIR
+        value: /tmp/library-claims

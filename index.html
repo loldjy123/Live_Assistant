@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Library contents claim</title>
+<script src="site-config.js"></script>
+
+<style>
+body{font:16px system-ui,sans-serif;margin:0;background:#f5f6f8;color:#182435}main{max-width:1200px;margin:auto;padding:24px}h1{font-size:26px}button,input,select{font:inherit;padding:8px;margin:4px}button{cursor:pointer}button:disabled{cursor:default}section{background:white;padding:16px;border:1px solid #dde2e8;border-radius:8px;margin:16px 0}video{width:min(100%,640px);background:#172334}label{display:inline-block}table{width:100%;border-collapse:collapse;font-size:14px}td,th{padding:8px;border-bottom:1px solid #ddd;text-align:left}#inventoryWrap{overflow:auto}#status{font-weight:600}#errors{color:#9f2020;white-space:pre-wrap}a{color:#194bac}.muted{color:#536176}#report a{display:inline-block;padding:12px}canvas[hidden]{display:none}
+</style></head>
+<body><main><h1>Library contents claim</h1>
+<section><label>Country <input id="country" placeholder="United States" required></label><label>Currency <input id="currency" placeholder="USD" maxlength="3" size="4" required></label><button id="start">Start sweep</button><button id="finish" disabled>Finish sweep</button><button id="new" hidden>New sweep</button><p id="status" role="status">Ready</p><div id="errors" role="alert"></div><div id="report"></div></section>
+<section><video id="video" autoplay muted playsinline></video><canvas id="capture" hidden></canvas></section>
+<section><h2>Book inventory</h2><p id="bookTotals" role="status">Books identified: 0 of 0 detected · Replacement total: 0 · Used total: 0</p><div id="inventoryWrap"><table><thead><tr><th>Book</th><th>Status</th><th>Replacement</th><th>Used</th></tr></thead><tbody id="inventory"></tbody></table></div>
+</section>
+
+
+</main>
+<script>
+if (location.protocol === 'file:') {
+    const panel = document.createElement('section');
+    const heading = document.createElement('h2');
+    heading.textContent = 'Open the hosted app';
+    const instructions = document.createElement('p');
+    instructions.textContent = 'Visit the deployed website to use the assistant. For local development, use Open Library.command.';
+    panel.append(heading, instructions);
+    document.querySelector('main').replaceChildren(panel);
+} else {
+    const script = document.createElement('script');
+    script.src = new URL('app.js', document.baseURI).href;
+    document.body.append(script);
+}
+</script></body></html>

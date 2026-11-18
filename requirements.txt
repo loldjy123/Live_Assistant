@@ -1,0 +1,8 @@
+google-genai==3.3.0
+websockets>=14.2,<18
+certifi>=2026.10.23
+pydantic>=2.12,<3
+Pillow>=11,<14
+python-dotenv>=1,<2
+jsonschema>=4,<5
+aiohttp>=3.12,<4
