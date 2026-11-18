@@ -1,0 +1,39 @@
+name: Publish frontend to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - name: Package frontend
+        env:
+          BACKEND_URL: ${{ vars.BACKEND_URL }}
+        run: |
+          mkdir _site
+          cp index.html app.js processor.js site-config.js _site/
+          if [ -n "$BACKEND_URL" ]; then
+            python3 -c 'import json, os; from pathlib import Path; Path("_site/site-config.js").write_text("window.LIBRARY_CONFIG = " + json.dumps({"backendUrl": os.environ["BACKEND_URL"]}) + ";\n")'
+          fi
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4
